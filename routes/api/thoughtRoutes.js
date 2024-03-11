@@ -1,15 +1,15 @@
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
 
-const {
-  getAllThoughts,
-  getThoughtById,
-  createThought,
-  updateThought,
-  deleteThought,
-  addReaction,
-  removeReaction
-} = require('../../controllers/thought-controller');
-const { deleteReaction } = require('../../controllers/thoughtcontroller');
+const { 
+  getAllThoughts, 
+  getThoughtById, 
+  createThought, 
+  updateThought, 
+  deleteThought, 
+  addReaction, 
+  removeReaction } = 
+  require('../../controllers/thoughtController');
 
 // /api/thoughts
 router

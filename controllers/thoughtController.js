@@ -1,5 +1,5 @@
 // ObjectId() method for converting studentId string into an ObjectId for querying database
-const { Thought, User } = require('../models').Types;
+const { User, Thought } = require('../models');
 const { populate } = require('../models/User');
 
 const thoughtController = {
@@ -99,7 +99,7 @@ getThoughtById({ params }, res) {
   .catch(err => res.json(err));
   },  
 
-  createReaction({params, body}, res) {
+  addReaction({params, body}, res) {
     Thought.findOneAndUpdate(
       {_id: params.thoughtId},
       {$push: {reactions: body}},
@@ -116,7 +116,7 @@ getThoughtById({ params }, res) {
       .catch(err => res.status(400).json(err))
   },
 
-  deleteReaction({ params }, res) {
+  removeReaction({ params }, res) {
     Thought.findOneAndUpdate(
       { _id: params.thoughtId },
       { $pull: {reactions: {reactionId: params.reactionId}}},
