@@ -1,38 +1,45 @@
-const { Schema, model } = require('mongoose');
+const {Schema, model, Types} = require('mongoose');
+const dateFormat = require('../utils/dateFormat');
 
-const courseSchema = new Schema(
-  {
-    courseName: {
-      type: String,
-      required: true,
-    },
-    inPerson: {
-      type: Boolean,
-      default: true,
-    },
-    startDate: {
-      type: Date,
-      default: Date.now(),
-    },
-    endDate: {
-      type: Date,
-      default: () => new Date(+new Date() + 84 * 24 * 60 * 60 * 1000),
-    },
-    students: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'student',
-      },
-    ],
+const UserSchema = new Schema({
+  username: {
+    type: String,
+    unique: true,
+    required: true,
+    trim: true
   },
-  {
-    toJSON: {
-      virtuals: true,
-    },
-    id: false,
-  }
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    match: [/.+@.+\..+/, 'Please enter a valid e-mail address']
+  },
+  thoughts: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Thought'
+    }
+  ],
+  friends: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ]
+},
+{
+  toJSON: {
+    virtuals: true,
+    getters: true
+  },
+  id: false
+}
 );
 
-const Course = model('course', courseSchema);
+UserSchema.virtual('friendCount').get(function() {
+  return this.friends.length;
+});
 
-module.exports = Course;
+const User = model('User', UserSchema);
+
+module.exports = User;
