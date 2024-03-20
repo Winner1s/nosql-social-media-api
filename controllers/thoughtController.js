@@ -55,27 +55,26 @@ updateThought({params, body}, res) {
    .catch(err => res.json(err));  
   },
 
-getThoughtById({ params }, res) {
-  Thought.findOne({_id: params.id})
-  .populate({
-    path: 'reactions',
-    select: '-_v'
-  })
-
-  .select('_v')
-  .sort({ _id: -1})
-  .then(dbThoughtData => {
-    if (!dbThoughtData) {
-      res.status(404).json({ message: "No thought with this ID"});
-      return;
-    }
-    res.json(dbThoughtData);
-  })
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(400);
+  getThoughtById({ params }, res) {
+    Thought.findOne({ _id: params.id })
+    .populate({
+        path: 'reactions',
+        select: '-__v' // Fixed the typo, exclude '__v' field
+    })
+    .select('-__v') // Exclude '__v' field
+    .sort({ _id: -1 })
+    .then(dbThoughtData => {
+        if (!dbThoughtData) {
+            return res.status(404).json({ message: 'No thought found with this ID' }); // Return the response to exit function
+        }
+        res.json(dbThoughtData);
+    })
+    .catch(err => {
+        console.error(err);
+        res.status(500).json({ message: 'Internal server error' }); // Provide a generic error message for internal server errors
     });
-  },
+},
+
   deleteThought({ params }, res) {
     Thought.findOneAndDelete({ _id: params.id})
     .then(dbThoughtData => {
@@ -99,22 +98,22 @@ getThoughtById({ params }, res) {
   .catch(err => res.json(err));
   },  
 
-  addReaction({params, body}, res) {
+  addReaction({ params, body }, res) {
     Thought.findOneAndUpdate(
-      {_id: params.thoughtId},
-      {$push: {reactions: body}},
-      {new: trusted, runValidators: true})
-      .populate({ path: 'reactions', select: '-_v'})
-      .select('-_v')
-      .then(dbThoughtData => {
+        { _id: params.thoughtId },
+        { $push: { reactions: body } },
+        { new: true, runValidators: true } // Fixed the typo, set new: true
+    )
+    .populate({ path: 'reactions', select: '-__v' }) // '__v' instead of '_v'
+    .select('-__v') // '__v' instead of '_v'
+    .then(dbThoughtData => {
         if (!dbThoughtData) {
-          res.status(400).json({ message: 'No thoughts with this ID.'});
-          return;
+            return res.status(404).json({ message: 'No thought found with this ID.' }); // Changed status to 404 for not found
         }
         res.json(dbThoughtData);
-      })
-      .catch(err => res.status(400).json(err))
-  },
+    })
+    .catch(err => res.status(500).json(err)); // Changed status to 500 for internal server error
+},
 
   removeReaction({ params }, res) {
     Thought.findOneAndUpdate(

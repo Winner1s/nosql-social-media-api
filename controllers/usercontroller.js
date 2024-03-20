@@ -24,38 +24,41 @@ const userController = {
   // Update user by id
   updateUser: async (req, res) => {
     try {
-      const user = await User.findOneAndUpdate(
-        { _id: req.params.id },
-        { $set: req.body },
-        { runValidators: true, new: true }
-      );
+        const { username, email } = req.body; // Assuming you're sending username and email in the request body
+        
+        const updatedUser = await User.findOneAndUpdate(
+            { _id: req.params.userId }, // Assuming userId is provided in the route parameters
+            { username, email }, // Update the fields you want to modify
+            { new: true, runValidators: true } // Options: new returns the modified user, runValidators runs validators on update
+        );
 
-      if (!user) {
-        return res.status(404).json({ message: 'No user found' });
-      }
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-      res.json(user);
-    } catch (err) {
-      res.status(500).json(err);
+        res.json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
     }
-  },
+},
 
   // Delete user
   deleteUser: async (req, res) => {
     try {
-      const user = await User.findOneAndDelete({ _id: req.params.id });
+        const userId = req.params.userId;
 
-      if (!user) {
-        return res.status(404).json({ message: 'No user found' });
-      }
+        // Delete the user by ID
+        const deletedUser = await User.findByIdAndDelete(userId);
 
-      await Thought.deleteMany({ _id: { $in: user.thoughts } });
+        if (!deletedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-      res.json({ message: 'User and associated thoughts deleted!' });
-    } catch (err) {
-      res.status(500).json(err);
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
     }
-  },
+},
 
   // Get user by id
   getUserById: async (req, res) => {
@@ -94,21 +97,25 @@ const userController = {
   // Remove friend
   removeFriend: async (req, res) => {
     try {
-      const user = await User.findOneAndUpdate(
-        { _id: req.params.id },
-        { $pull: { friends: req.params.friendsId } },
-        { runValidators: true, new: true }
-      );
+        const userId = req.params.userId;
+        const friendId = req.params.friendId;
 
-      if (!user) {
-        return res.status(404).json({ message: 'No friend found with that ID' });
-      }
+        // Remove the friend from the user's friends array
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $pull: { friends: friendId } },
+            { new: true }
+        );
 
-      res.json(user);
-    } catch (err) {
-      res.status(500).json(err);
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
     }
-  }
+}
 };
 
 module.exports = userController;
