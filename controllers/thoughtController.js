@@ -59,19 +59,19 @@ updateThought({params, body}, res) {
     Thought.findOne({ _id: params.id })
     .populate({
         path: 'reactions',
-        select: '-__v' // Fixed the typo, exclude '__v' field
+        select: '-__v' 
     })
-    .select('-__v') // Exclude '__v' field
+    .select('-__v') 
     .sort({ _id: -1 })
     .then(dbThoughtData => {
         if (!dbThoughtData) {
-            return res.status(404).json({ message: 'No thought found with this ID' }); // Return the response to exit function
+            return res.status(404).json({ message: 'No thought found with this ID' }); 
         }
         res.json(dbThoughtData);
     })
     .catch(err => {
         console.error(err);
-        res.status(500).json({ message: 'Internal server error' }); // Provide a generic error message for internal server errors
+        res.status(500).json({ message: 'Internal server error' }); 
     });
 },
 
@@ -102,17 +102,17 @@ updateThought({params, body}, res) {
     Thought.findOneAndUpdate(
         { _id: params.thoughtId },
         { $push: { reactions: body } },
-        { new: true, runValidators: true } // Fixed the typo, set new: true
+        { new: true, runValidators: true } 
     )
-    .populate({ path: 'reactions', select: '-__v' }) // '__v' instead of '_v'
-    .select('-__v') // '__v' instead of '_v'
+    .populate({ path: 'reactions', select: '-__v' }) 
+    .select('-__v') 
     .then(dbThoughtData => {
         if (!dbThoughtData) {
-            return res.status(404).json({ message: 'No thought found with this ID.' }); // Changed status to 404 for not found
+            return res.status(404).json({ message: 'No thought found with this ID.' }); 
         }
         res.json(dbThoughtData);
     })
-    .catch(err => res.status(500).json(err)); // Changed status to 500 for internal server error
+    .catch(err => res.status(500).json(err)); 
 },
 
   removeReaction({ params }, res) {

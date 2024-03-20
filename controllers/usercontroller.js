@@ -24,12 +24,12 @@ const userController = {
   // Update user by id
   updateUser: async (req, res) => {
     try {
-        const { username, email } = req.body; // Assuming you're sending username and email in the request body
+        const { username, email } = req.body; 
         
         const updatedUser = await User.findOneAndUpdate(
-            { _id: req.params.userId }, // Assuming userId is provided in the route parameters
-            { username, email }, // Update the fields you want to modify
-            { new: true, runValidators: true } // Options: new returns the modified user, runValidators runs validators on update
+            { _id: req.params.userId }, 
+            { username, email }, 
+            { new: true, runValidators: true } 
         );
 
         if (!updatedUser) {
@@ -79,13 +79,13 @@ const userController = {
   addFriend: async (req, res) => {
     try {
       const user = await User.findOneAndUpdate(
-        { _id: req.params.userId }, // Change req.params.id to req.params.userId
-        { $addToSet: { friends: req.params.friendId } }, // Change req.params.friendsId to req.params.friendId
+        { _id: req.params.userId }, 
+        { $addToSet: { friends: req.params.friendId } }, 
         { runValidators: true, new: true }
       );
 
       if (!user) {
-        return res.status(404).json({ message: 'No user found with that ID' }); // Update the error message
+        return res.status(404).json({ message: 'No user found with that ID' }); 
       }
 
       res.json(user);
