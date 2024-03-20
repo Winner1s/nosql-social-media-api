@@ -52,5 +52,5 @@ There are no tests for this project.
 
 ## Sources
 
- Web sources were also used, including [Stack Overflow](https://stackoverflow.com/) and [ChatGPT](https://chat.openai.com).
+ My tutor Patrick Meehan assisted me with an error regarding the date format. Web sources were also used, including [Stack Overflow](https://stackoverflow.com/) and [ChatGPT](https://chat.openai.com).
 
