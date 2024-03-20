@@ -1,5 +1,5 @@
-const {Schema, model, Types} = require('mongoose');
-const dateFormat = require('../utils/dateFormat');
+const { Schema, model, Types } = require('mongoose');
+const dateFormat = require('../utils/dateFormat.js'); // Check the path to dateFormat.js
 
 const ReactionSchema = new Schema({
   reactionId: {
@@ -18,16 +18,14 @@ const ReactionSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    get: (createdAtVal) => dateFormat(createdAtVal)
+    get: (createdAtVal) => dateFormat(createdAtVal) // Using addDateSuffix function
   }
-},
-{
+}, {
   toJSON: {
     getters: true
   },
   id: false
-}
-);
+});
 
 const ThoughtSchema = new Schema({
   thoughtText: {
@@ -39,24 +37,22 @@ const ThoughtSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    get: (createdAtVal) => dateFormat(createdAtVal)
+    get: (createdAtVal) => dateFormat(createdAtVal) // Using addDateSuffix function
   },
   username: {
     type: String,
     required: true
   },
   reactions: [ReactionSchema]
-},
-{
+}, {
   toJSON: {
     virtuals: true,
     getters: true
   },
   id: false
-}
-);
+});
 
-ThoughtSchema.virtual('reactionCount').get(function() {
+ThoughtSchema.virtual('reactionCount').get(function () {
   return this.reactions.length;
 });
 
