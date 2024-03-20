@@ -89,7 +89,7 @@ const userController = {
     } catch (err) {
       res.status(500).json(err);
     }
-  }
+  },
 
   // Remove friend
   removeFriend: async (req, res) => {
