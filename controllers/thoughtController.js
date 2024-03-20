@@ -100,7 +100,7 @@ updateThought({params, body}, res) {
 
   addReaction({ params, body }, res) {
     Thought.findOneAndUpdate(
-        { _id: params.thoughtId },
+        { _id: params.id},
         { $push: { reactions: body } },
         { new: true, runValidators: true } 
     )
@@ -117,7 +117,7 @@ updateThought({params, body}, res) {
 
   removeReaction({ params }, res) {
     Thought.findOneAndUpdate(
-      { _id: params.thoughtId },
+      { _id: params.id },
       { $pull: {reactions: {reactionId: params.reactionId}}},
       {new: true }
     )

@@ -63,12 +63,12 @@ const userController = {
   // Get user by id
   getUserById: async (req, res) => {
     try {
-      const user = await User.findOne({ _id: req.params.id });
-
+      const user = await User.findOne({ _id: req.params.userId });
+  
       if (!user) {
         return res.status(404).json({ message: 'No user found' });
       }
-
+  
       res.json(user);
     } catch (err) {
       res.status(500).json(err);
